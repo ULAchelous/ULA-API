@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "ula_api",
+  "version": "${version}",
+  "name": "ULAPI",
+  "description": "_Achelous's API \n _Achelous的实用服务器支持库",
+  "authors": [],
+  "contact": {},
+  "license": "GPL-3.0",
+  "environment": "server",
+  "entrypoints": {
+    "main": [
+      "io.ula.api.Main"
+    ]
+  },
+  "mixins": [
+    "ula_lib.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "minecraft": "${minecraft_version}"
+  }
+}
