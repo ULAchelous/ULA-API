@@ -31,7 +31,7 @@ public class ConfigFile {
             try{
                 Files.createDirectory(folderPath);
             } catch (IOException e) {
-                throw new RuntimeException("Failed to create io.ula.config directory :" + e.getMessage());
+                throw new RuntimeException("Failed to create config directory :" + e.getMessage());
             }
         }
     }
@@ -46,7 +46,7 @@ public class ConfigFile {
             try {
                 Files.createFile(Path.of(file.toURI()));
             } catch (IOException e) {
-                throw new RuntimeException(String.format("Failed to create io.ula.config file \"%s\" : ", file_name) + e.getMessage());
+                throw new RuntimeException(String.format("Failed to create config file \"%s\" : ", file_name) + e.getMessage());
             }
             if(defaultContent!=null){
                 jsonObject = defaultContent;
@@ -61,7 +61,7 @@ public class ConfigFile {
             try {
                 Files.delete(Path.of(file.toURI()));
             } catch (IOException e) {
-                throw new RuntimeException(String.format("Failed to remove io.ula.config file \"%s\" : ", file_name) + e.getMessage());
+                throw new RuntimeException(String.format("Failed to remove config file \"%s\" : ", file_name) + e.getMessage());
             }
         }
     }
@@ -82,7 +82,7 @@ public class ConfigFile {
         try {
             Files.write(Path.of(file.toURI()), gson.toJson(jsonObject).getBytes());
         }catch(IOException e){
-            throw new RuntimeException(String.format("Failed to write io.ula.config file \"%s\" : ",file_name)+e.getMessage());
+            throw new RuntimeException(String.format("Failed to write config file \"%s\" : ",file_name)+e.getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ public class ConfigFile {
             list = new String(Files.readAllBytes(Path.of(file.toURI())));
             jsonObject = JsonParser.parseString(list).getAsJsonObject();
         }catch(Exception e){
-            throw new RuntimeException(String.format("Failed to read io.ula.config file \"%s\" : ",file_name) + e.getMessage());
+            throw new RuntimeException(String.format("Failed to read config file \"%s\" : ",file_name) + e.getMessage());
         }
     }
 }
