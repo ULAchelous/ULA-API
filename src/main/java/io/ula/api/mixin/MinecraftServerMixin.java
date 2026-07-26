@@ -1,6 +1,6 @@
 package io.ula.api.mixin;
 
-import io.ula.api.motd.MotdManager;
+import io.ula.api.motd.CustomMotdHolder;
 import io.ula.api.scheduler.ServerScheduler;
 import io.ula.api.scheduler.ServerSchedulerHolder;
 import net.minecraft.network.chat.Component;
@@ -12,16 +12,18 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin implements ServerSchedulerHolder {
+public class MinecraftServerMixin implements ServerSchedulerHolder , CustomMotdHolder {
     @Shadow
     private @Nullable String motd;
     private final ServerScheduler serverScheduler = new ServerScheduler();
+    String CUSTOM_MOTD = null;
+    Type MOTD_TYPE = null;
+    Boolean ENABLE_CUSTOM_MOTD = false;
 
     @Override
     public ServerScheduler drng$getServerSchedule(){
@@ -35,11 +37,11 @@ public class MinecraftServerMixin implements ServerSchedulerHolder {
 
     @ModifyArg(method = "buildServerStatus",at = @At(value = "INVOKE", target = "Lnet/minecraft/network/protocol/status/ServerStatus;<init>(Lnet/minecraft/network/chat/Component;Ljava/util/Optional;Ljava/util/Optional;Ljava/util/Optional;Z)V"),index = 0)
     private Component modifyMotd(Component motd){
-        if(MotdManager.ENABLE_CUSTOM_MOTD){
-            switch(MotdManager.MOTD_TYPE) {
-                case  DIRECT_REPLACE -> motd = Component.literal(MotdManager.CUSTOM_MOTD);
+        if(ENABLE_CUSTOM_MOTD){
+            switch(MOTD_TYPE) {
+                case  DIRECT_REPLACE -> motd = Component.literal(CUSTOM_MOTD);
                 case FORMARTTED_STRING -> {
-                    String[] strs = MotdManager.CUSTOM_MOTD.split("\\{motd\\}",-1);
+                    String[] strs = CUSTOM_MOTD.split("\\{motd\\}",-1);
                     MutableComponent customMotd = Component.literal(strs[0]);
                     for(int i = 0;i < strs.length -1;i++){
                         customMotd.append(motd);
@@ -50,5 +52,19 @@ public class MinecraftServerMixin implements ServerSchedulerHolder {
             }
         }
         return motd;
+    }
+
+    public void setMotd(String motd, Type type){
+        if(motd != null && type != null) {
+            CUSTOM_MOTD = motd;
+            MOTD_TYPE = type;
+            ENABLE_CUSTOM_MOTD = true;
+        }
+    }
+
+    public void unsetMotd(String motd, Type type){
+        CUSTOM_MOTD = null;
+        MOTD_TYPE = null;
+        ENABLE_CUSTOM_MOTD = false;
     }
 }
