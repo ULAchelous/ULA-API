@@ -5,6 +5,7 @@ import io.ula.api.scheduler.ServerScheduler;
 import io.ula.api.scheduler.ServerSchedulerHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.protocol.status.ServerStatus;
 import net.minecraft.server.MinecraftServer;
 import org.jspecify.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -17,10 +18,17 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.function.BooleanSupplier;
 
 @Mixin(MinecraftServer.class)
-public class MinecraftServerMixin implements ServerSchedulerHolder , CustomMotdHolder {
+public abstract class MinecraftServerMixin implements ServerSchedulerHolder , CustomMotdHolder {
     @Shadow
     private @Nullable String motd;
+
+    @Shadow
+    protected abstract ServerStatus buildServerStatus();
+
     private final ServerScheduler serverScheduler = new ServerScheduler();
+
+    private ServerStatus status;
+
     String CUSTOM_MOTD = null;
     Type MOTD_TYPE = null;
     Boolean ENABLE_CUSTOM_MOTD = false;
@@ -60,6 +68,7 @@ public class MinecraftServerMixin implements ServerSchedulerHolder , CustomMotdH
             MOTD_TYPE = type;
             ENABLE_CUSTOM_MOTD = true;
         }
+        status = buildServerStatus();
     }
 
     public void unsetMotd(String motd, Type type){
