@@ -69,7 +69,7 @@ public abstract class MinecraftServerMixin implements ServerSchedulerHolder , Cu
             MOTD_TYPE = type;
             ENABLE_CUSTOM_MOTD = true;
         }
-        status = buildServerStatus();
+        //status = buildServerStatus();
     }
 
     public void unsetMotd(String motd, Type type){
