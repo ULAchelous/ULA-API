@@ -35,7 +35,11 @@ public class ServerScheduler {
                 tasksId.add(entry.getKey());
                 continue;
             }
-            task.tickable();
+            try {
+                task.tickable();
+            } catch (Exception e) {
+                throw new RuntimeException("An exception happened while running schedule task: " + e.getMessage());
+            }
         }
         for(String id : tasksId)
             tasks.remove(id);
