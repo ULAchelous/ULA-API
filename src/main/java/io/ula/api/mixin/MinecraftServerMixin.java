@@ -33,6 +33,7 @@ public abstract class MinecraftServerMixin implements ServerSchedulerHolder , Cu
     Type MOTD_TYPE = null;
     Boolean ENABLE_CUSTOM_MOTD = false;
 
+
     @Override
     public ServerScheduler drng$getServerSchedule(){
         return  this.serverScheduler;
